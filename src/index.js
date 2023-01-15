@@ -1,4 +1,6 @@
 import Notiflix from 'notiflix';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
 
 const formRef = document.querySelector('.search-form');
@@ -48,7 +50,8 @@ function markupPhotoCard(arr) {
         downloads,
       }) => {
         return `
-      <div class="photo-card">
+     <a href="${largeImageURL}">
+     <div class="photo-card">
   <img src="${webformatURL}" alt="${comments}" loading="lazy" />
   <div class="info">
     <p class="info-item">
@@ -65,10 +68,13 @@ function markupPhotoCard(arr) {
     </p>
   </div>
 </div>
+</a>
           `;
       }
     )
     .join('');
 
-  galleryRef.innerHTML = markup;
+  galleryRef.insertAdjacentHTML('beforeend', markup);
+
+  let gallery = new SimpleLightbox('.gallery a');
 }
