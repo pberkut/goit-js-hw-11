@@ -2,12 +2,19 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
+import bootstrap from 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import BSN from 'bootstrap.native';
 
 const formRef = document.querySelector('.search-form');
 const galleryRef = document.querySelector('.gallery');
 
 // console.dir(axios);
 
+//
+// var myButtonINIT = new BSN.Button('#myButton');
+// myButtonINIT();
+//
 formRef.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
@@ -31,7 +38,8 @@ function getImage(query) {
 }
 
 function markupPhotoCard(arr) {
-  const isNUllArr = arr.length < 0;
+  console.log(arr);
+  const isNUllArr = arr.length === 0;
   if (isNUllArr) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
@@ -50,9 +58,10 @@ function markupPhotoCard(arr) {
         downloads,
       }) => {
         return `
-     <a href="${largeImageURL}">
-     <div class="photo-card">
-  <img src="${webformatURL}" alt="${comments}" loading="lazy" />
+       
+     <a class="link link-secondary" href="${largeImageURL}">
+     <div class="photo-card class="p-3"">
+  <img class="img" src="${webformatURL}" alt="${comments}" loading="lazy" />
   <div class="info">
     <p class="info-item">
       <b>Likes</b> ${likes}
@@ -69,6 +78,7 @@ function markupPhotoCard(arr) {
   </div>
 </div>
 </a>
+
           `;
       }
     )

@@ -4,16 +4,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Page title</title>
+  <title>Pixabay</title>
   <link rel="stylesheet" href="./sass/index.scss" />
 </head>
 
 <body>
 
-  <form class="search-form" id="search-form">
-    <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
-    <button type="submit">Search</button>
+  <form class="search-form  input-group" id="search-form">
+    <div class="col-sm-4">
+      <input class="form-control" type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+    </div>
+    <button class="btn btn-primary" type="submit">Search</button>
   </form>
+
 
   <div class="gallery"></div>
 
