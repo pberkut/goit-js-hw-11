@@ -12,15 +12,20 @@
 
 <body>
 
-  <form class="search-form  input-group" id="search-form">
-    <div class="col-sm-4">
-      <input class="form-control" type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+  <header class="header text-bg-secondary ">
+    <div class="container">
+      <form class="search-form  input-group" id="search-form">
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="searchQuery" autocomplete="off"
+            placeholder="Search images..." />
+        </div>
+        <button class="btn btn-primary" type="submit">Search</button>
+      </form>
     </div>
-    <button class="btn btn-primary" type="submit">Search</button>
-  </form>
+  </header>
 
-
-  <div class="gallery"></div>
+  <div class="gallery container"></div>
+  </div>
 
   <!-- ❗️❗️❗️ Add partials like so for every page -->
   <!-- <include src="./partials/example.html"></include> -->

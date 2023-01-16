@@ -2,7 +2,7 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
-// import BSN from 'bootstrap.native';
+import BSN from 'bootstrap.native';
 
 const formRef = document.querySelector('.search-form');
 const galleryRef = document.querySelector('.gallery');
@@ -13,12 +13,18 @@ const galleryRef = document.querySelector('.gallery');
 // var myButtonINIT = new BSN.Button('#myButton');
 // myButtonINIT();
 //
+
+//
+
+getImage('cat');
+// for debug
 formRef.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
   evt.preventDefault();
 
   const query = evt.currentTarget.elements.searchQuery.value;
+
   getImage(query);
 }
 
@@ -56,10 +62,12 @@ function markupPhotoCard(arr) {
         downloads,
       }) => {
         return `
-       
-     <a class="link link-secondary" href="${largeImageURL}">
-     <div class="photo-card class="p-3"">
+      
+  <a class="link card-link" href="${largeImageURL}">
+  <div class="photo-card">
+  <div class="thumb">
   <img class="img" src="${webformatURL}" alt="${comments}" loading="lazy" />
+  </div>
   <div class="info">
     <p class="info-item">
       <b>Likes</b> ${likes}
