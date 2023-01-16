@@ -1,23 +1,42 @@
+import axios, { Axios } from 'axios';
+
 const BASE_URL = 'https://pixabay.com/api/';
 const API_KEY = '32766360-76e7eba189222bd8a15da9e43';
 
 export default class PixabayApi {
   constructor() {
-    // this.query;
+    this.paginationPage = 1;
+    this.searchQueryWord = 'cat';
+    this.perPage = 40;
   }
 
-  fetchImage(query) {
-    const API_KEY = '';
-    const queryParamURL = `key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true`;
+  async fetchImage() {
+    const queryParamURL = `key=${API_KEY}&q=${this.query}&image_type=photo&orientation=horizontal&safesearch=true&per_page=${this.perPage}&page=${this.paginationPage}`;
 
-    return fetch(
-      `https://pixabay.com/api/?key=32766360-76e7eba189222bd8a15da9e43&q=cat&image_type=photo&orientation=horizontal&safesearch=true`
-    ).then(r => {
-      if (!r.ok) {
-        throw new Error(r.statusText);
-      }
+    return await axios.get(`${BASE_URL}?${queryParamURL}`);
+  }
 
-      return r.json();
-    });
+  get countPage() {
+    return this.paginationPage;
+  }
+
+  set countPage(newCountPage) {
+    this.paginationPage = newCountPage;
+  }
+
+  get searchQueryWord() {
+    return this.query;
+  }
+
+  set searchQueryWord(newQueryWord) {
+    this.query = newQueryWord;
+  }
+
+  get amountPerPage() {
+    return this.perPage;
+  }
+
+  set amountPerPage(newPerPage) {
+    this.perPage = newPerPage;
   }
 }

@@ -1,55 +1,91 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import axios from 'axios';
 import BSN from 'bootstrap.native';
+import PixabayApi from './PixabayAPI';
 
+// Reference
 const formRef = document.querySelector('.search-form');
 const galleryRef = document.querySelector('.gallery');
+const guard = document.querySelector('.guard');
 
-// console.dir(axios);
+// Variables
+const pixabayApi = new PixabayApi();
+const options = {
+  root: null,
+  rootMargin: '500px',
+  threshhold: 0,
+};
+let observer = new IntersectionObserver(onLoad, options);
 
-//
-// var myButtonINIT = new BSN.Button('#myButton');
-// myButtonINIT();
-//
-
-//
-
-getImage('cat');
-// for debug
 formRef.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
   evt.preventDefault();
 
-  const query = evt.currentTarget.elements.searchQuery.value;
+  const {
+    searchQuery: { value: searchQuery },
+  } = evt.currentTarget.elements;
 
-  getImage(query);
+  const isEmptyInput = searchQuery;
+
+  if (!isEmptyInput) {
+    clearMarkup();
+    observer.unobserve(guard);
+    return;
+  }
+
+  pixabayApi.searchQueryWord = searchQuery;
+  pixabayApi.countPage = 1;
+  observer.unobserve(guard);
+  clearMarkup();
+  getImage();
 }
 
-function getImage(query) {
-  const BASE_URL = 'https://pixabay.com/api/';
-  const API_KEY = '32766360-76e7eba189222bd8a15da9e43';
-  const apiUrl = `${BASE_URL}?key=${API_KEY}&q=${query}&image_type=photo&orientation=horizontal&safesearch=true`;
+function onLoad(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pixabayApi.countPage += 1;
+      getImage();
+    }
+  });
+}
 
-  axios
-    .get(apiUrl)
-    .then(({ data }) => {
-      markupPhotoCard(data.hits);
-    })
-    .catch(console.log);
+async function getImage() {
+  try {
+    const { data } = await pixabayApi.fetchImage();
+    const isNUllArr = data.hits.length === 0;
+    const isNullTotalHits = data.hits.length < pixabayApi.perPage;
+    if (isNUllArr) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      observer.unobserve(guard);
+      return;
+    }
+
+    if (isNullTotalHits) {
+      Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+      observer.unobserve(guard);
+      return;
+    }
+
+    markupPhotoCard(data.hits);
+
+    new SimpleLightbox('.gallery a');
+    observer.observe(guard);
+  } catch (error) {
+    Notiflix.Notify.failure(error.message);
+  }
+}
+
+function clearMarkup() {
+  galleryRef.innerHTML = '';
 }
 
 function markupPhotoCard(arr) {
-  console.log(arr);
-  const isNUllArr = arr.length === 0;
-  if (isNUllArr) {
-    Notiflix.Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.'
-    );
-    return;
-  }
   const markup = arr
     .map(
       ({
@@ -62,7 +98,7 @@ function markupPhotoCard(arr) {
         downloads,
       }) => {
         return `
-      
+    
   <a class="link card-link" href="${largeImageURL}">
   <div class="photo-card">
   <div class="thumb">
@@ -89,8 +125,5 @@ function markupPhotoCard(arr) {
       }
     )
     .join('');
-
   galleryRef.insertAdjacentHTML('beforeend', markup);
-
-  let gallery = new SimpleLightbox('.gallery a');
 }
