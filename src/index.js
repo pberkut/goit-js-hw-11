@@ -2,8 +2,6 @@ import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 import axios from 'axios';
-import bootstrap from 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 // import BSN from 'bootstrap.native';
 
 const formRef = document.querySelector('.search-form');
