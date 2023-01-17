@@ -23,7 +23,6 @@ formRef.addEventListener('submit', onSearch);
 function onSearch(evt) {
   evt.preventDefault();
 
-  // loadingProgressBtn();
   const {
     searchQuery: { value: searchQuery },
   } = evt.currentTarget.elements;
@@ -44,14 +43,17 @@ function onSearch(evt) {
 
 async function getImage() {
   try {
+    loadingProgressBtn();
     const {
       data: { hits: hits, totalHits: totalHits },
     } = await pixabayApi.fetchImage();
-
+    loadingProgressBtn();
     const isNUllArr = hits.length === 0;
     const isFirstRequest = pixabayApi.paginationPage === 1;
-    const x = Math.ceil(totalHits / pixabayApi.amountPerPage);
-    const isObserver = pixabayApi.paginationPage < x;
+
+    const isObserver =
+      pixabayApi.paginationPage <
+      Math.ceil(totalHits / pixabayApi.amountPerPage);
     if (isNUllArr) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
@@ -64,6 +66,7 @@ async function getImage() {
     }
 
     markupPhotoCard(hits);
+
     scrolPage();
 
     if (isObserver) {
@@ -122,10 +125,7 @@ function markupPhotoCard(arr) {
     )
     .join('');
   galleryRef.insertAdjacentHTML('beforeend', markup);
-
   simpleLightbox.refresh();
-
-  // loadingProgressBtn();
 }
 
 function onLoad(entries, observer) {
