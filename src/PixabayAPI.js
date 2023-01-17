@@ -6,7 +6,7 @@ const API_KEY = '32766360-76e7eba189222bd8a15da9e43';
 export default class PixabayApi {
   constructor() {
     this.paginationPage = 1;
-    this.searchQueryWord = 'cat';
+    this.searchQueryWord = '';
     this.perPage = 40;
   }
 

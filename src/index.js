@@ -4,11 +4,13 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 import PixabayApi from './PixabayAPI';
 
+const pixabayApi = new PixabayApi();
+const simpleLightbox = new SimpleLightbox('.gallery a');
+
 const formRef = document.querySelector('.search-form');
 const galleryRef = document.querySelector('.gallery');
 const guard = document.querySelector('.guard');
 
-const pixabayApi = new PixabayApi();
 const options = {
   root: null,
   rootMargin: '500px',
@@ -20,34 +22,24 @@ formRef.addEventListener('submit', onSearch);
 
 function onSearch(evt) {
   evt.preventDefault();
-  loadingProgressBtn();
+
+  // loadingProgressBtn();
   const {
     searchQuery: { value: searchQuery },
   } = evt.currentTarget.elements;
 
-  const isEmptyInput = searchQuery;
-
-  if (!isEmptyInput) {
+  if (!searchQuery.trim()) {
     clearMarkup();
     observer.unobserve(guard);
     return;
   }
 
-  pixabayApi.searchQueryWord = searchQuery;
+  pixabayApi.searchQueryWord = searchQuery.trim();
   pixabayApi.countPage = 1;
-  observer.unobserve(guard);
+
   clearMarkup();
 
   getImage();
-}
-
-function onLoad(entries, observer) {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      pixabayApi.countPage += 1;
-      getImage();
-    }
-  });
 }
 
 async function getImage() {
@@ -57,22 +49,13 @@ async function getImage() {
     } = await pixabayApi.fetchImage();
 
     const isNUllArr = hits.length === 0;
-    const isReachedImage = hits.length < pixabayApi.perPage;
     const isFirstRequest = pixabayApi.paginationPage === 1;
-
+    const x = Math.ceil(totalHits / pixabayApi.amountPerPage);
+    const isObserver = pixabayApi.paginationPage < x;
     if (isNUllArr) {
       Notiflix.Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
-      observer.unobserve(guard);
-      return;
-    }
-
-    if (isReachedImage) {
-      Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-      observer.unobserve(guard);
       return;
     }
 
@@ -81,15 +64,21 @@ async function getImage() {
     }
 
     markupPhotoCard(hits);
-    observer.observe(guard);
     scrolPage();
+
+    if (isObserver) {
+      observer.observe(guard);
+    } else {
+      if (!isFirstRequest) {
+        observer.unobserve(guard);
+        Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      }
+    }
   } catch (error) {
     Notiflix.Notify.failure(error.message);
   }
-}
-
-function clearMarkup() {
-  galleryRef.innerHTML = '';
 }
 
 function markupPhotoCard(arr) {
@@ -133,8 +122,20 @@ function markupPhotoCard(arr) {
     )
     .join('');
   galleryRef.insertAdjacentHTML('beforeend', markup);
-  new SimpleLightbox('.gallery a');
-  loadingProgressBtn();
+
+  simpleLightbox.refresh();
+
+  // loadingProgressBtn();
+}
+
+function onLoad(entries, observer) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      pixabayApi.countPage += 1;
+      getImage();
+    } else {
+    }
+  });
 }
 
 function scrolPage() {
@@ -151,4 +152,8 @@ function scrolPage() {
 function loadingProgressBtn() {
   const spinnerBtn = document.querySelector('.spinner-btn');
   spinnerBtn.classList.toggle('spinner-border');
+}
+
+function clearMarkup() {
+  galleryRef.innerHTML = '';
 }
