@@ -2,6 +2,7 @@ import Notiflix from 'notiflix';
 
 import { refs } from './refs';
 import { PixabayAPI } from './PixabayAPI';
+import { spinnerPlay, spinnerStop } from './spinner';
 import { markupGalleryCards, clearMarkup } from './create-markup';
 
 const pixabayAPI = new PixabayAPI();
@@ -29,44 +30,27 @@ function onSearch(evt) {
     return;
   }
 
-  pixabayAPI.resetPaginationPage();
   pixabayAPI.searchQuery = searchQueryWord;
-
+  pixabayAPI.resetPaginationPage();
+  observer.unobserve(refs.guard);
   clearMarkup();
-
   getImage();
 }
 
 async function getImage() {
   try {
-    loadingProgressBtn();
+    spinnerPlay();
     const {
       data: { hits: hits, totalHits: totalHits },
     } = await pixabayAPI.fetchImage();
 
-    loadingProgressBtn();
-
+    spinnerStop();
     const hasResult = hits.length === 0;
     const isFirstRequest = pixabayAPI.paginationPage === 1;
 
     pixabayAPI.setTotalImage(totalHits);
     const hasMore = pixabayAPI.hasMoreImage();
-
-    if (hasResult) {
-      Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
-      );
-      return;
-    }
-
-    if (isFirstRequest) {
-      Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
-    }
-
-    markupGalleryCards(hits);
-
-    scrolPage();
-
+    // debugger;
     if (hasMore) {
       observer.observe(refs.guard);
     } else {
@@ -77,6 +61,22 @@ async function getImage() {
         );
       }
     }
+
+    if (hasResult) {
+      Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+      // debugger;
+      return;
+    }
+
+    if (isFirstRequest) {
+      Notiflix.Notify.info(`Hooray! We found ${totalHits} images.`);
+    }
+
+    markupGalleryCards(hits);
+
+    scrolPage();
   } catch (error) {
     Notiflix.Notify.failure(error.message);
   }
@@ -100,9 +100,4 @@ function scrolPage() {
     top: cardHeight * 0.3,
     behavior: 'smooth',
   });
-}
-
-function loadingProgressBtn() {
-  const spinnerBtn = document.querySelector('.spinner-btn');
-  spinnerBtn.classList.toggle('spinner-border');
 }
