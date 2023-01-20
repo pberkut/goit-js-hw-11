@@ -3,8 +3,6 @@ import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
 const simpleLightbox = new SimpleLightbox('.gallery a');
 
-// console.log(refs);
-
 function markupGalleryCards(arr) {
   const markup = arr
     .map(
@@ -17,9 +15,7 @@ function markupGalleryCards(arr) {
         comments,
         downloads,
       }) => {
-        return `
-    
-  <a class="link card-link" href="${largeImageURL}">
+        return `<a class="link card-link" href="${largeImageURL}">
   <div class="photo-card">
   <div class="thumb">
   <img class="img" src="${webformatURL}" alt="${tags}" loading="lazy" />
@@ -39,9 +35,7 @@ function markupGalleryCards(arr) {
     </p>
   </div>
 </div>
-</a>
-
-          `;
+</a>`;
       }
     )
     .join('');

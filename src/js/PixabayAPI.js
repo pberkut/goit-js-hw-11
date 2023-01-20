@@ -1,4 +1,4 @@
-import axios, { Axios } from 'axios';
+import axios from 'axios';
 
 export class PixabayAPI {
   #BASE_URL = 'https://pixabay.com/api/';

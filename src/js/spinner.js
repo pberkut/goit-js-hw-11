@@ -23,6 +23,7 @@ const opts = {
 };
 
 const spinner = new Spinner(opts);
+
 const spinnerPlay = () => {
   spinner.spin(refs.spinner);
   refs.backdrop.classList.remove('is-hidden');
