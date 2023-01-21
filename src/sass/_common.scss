@@ -1,5 +1,9 @@
 @import '~node_modules/modern-normalize/modern-normalize.css';
 
+html {
+  scroll-behavior: smooth;
+}
+
 .myButton {
   box-shadow: inset 0px -3px 7px 0px #29bbff;
   background: linear-gradient(to bottom, #2dabf9 5%, #0688fa 100%);
@@ -123,4 +127,19 @@
 }
 .css-input:focus {
   outline: 1px solid #0688fa;
+}
+
+.to_top__btn {
+  text-decoration: none;
+  z-index: 5;
+  opacity: 0.5;
+  position: fixed;
+
+  font-size: 50;
+
+  bottom: 40px;
+  right: 100px;
+  &:hover {
+    opacity: 1;
+  }
 }
