@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 
 import { refs } from './refs';
-import { PixabayAPI } from './PixabayAPI';
+import { PixabayAPI } from './pixabay-api-service';
 import { spinnerPlay, spinnerStop } from './spinner';
 import { markupGalleryCards, clearMarkup } from './create-markup';
 
